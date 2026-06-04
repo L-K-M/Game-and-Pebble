@@ -75,6 +75,33 @@ static void draw_glyph(GContext *ctx, GameId id, GRect t, GColor fg) {
       graphics_draw_line(ctx, GPoint(cx + 9, cy + 2), GPoint(cx + 9, cy + 8));
       graphics_draw_line(ctx, GPoint(cx - 9, cy + 8), GPoint(cx + 9, cy + 8));
     } break;
+    case GAME_INVADERS: {   // a little alien
+      graphics_fill_rect(ctx, GRect(cx - 8, cy - 4, 16, 8), 2, GCornersAll);
+      graphics_draw_line(ctx, GPoint(cx - 5, cy - 4), GPoint(cx - 7, cy - 9));
+      graphics_draw_line(ctx, GPoint(cx + 5, cy - 4), GPoint(cx + 7, cy - 9));
+      for (int i = -1; i <= 1; i++) graphics_fill_rect(ctx, GRect(cx - 2 + i * 5, cy + 4, 2, 4), 0, GCornerNone);
+    } break;
+    case GAME_FLAPPY: {     // a chubby bird
+      graphics_fill_circle(ctx, GPoint(cx - 1, cy), 8);
+      graphics_context_set_fill_color(ctx, GColorBlack);
+      graphics_fill_circle(ctx, GPoint(cx + 3, cy - 2), 2);
+      graphics_context_set_fill_color(ctx, fg);
+      graphics_draw_line(ctx, GPoint(cx + 7, cy), GPoint(cx + 12, cy - 2));
+      graphics_draw_line(ctx, GPoint(cx + 7, cy), GPoint(cx + 12, cy + 2));
+    } break;
+    case GAME_PONG: {       // two paddles + ball
+      graphics_fill_rect(ctx, GRect(cx - 11, cy - 5, 3, 12), 0, GCornerNone);
+      graphics_fill_rect(ctx, GRect(cx + 8, cy - 2, 3, 12), 0, GCornerNone);
+      graphics_fill_circle(ctx, GPoint(cx, cy), 2);
+    } break;
+    case GAME_FROG: {       // a frog face
+      graphics_fill_circle(ctx, GPoint(cx, cy + 1), 8);
+      graphics_fill_circle(ctx, GPoint(cx - 5, cy - 6), 3);
+      graphics_fill_circle(ctx, GPoint(cx + 5, cy - 6), 3);
+      graphics_context_set_fill_color(ctx, GColorBlack);
+      graphics_fill_circle(ctx, GPoint(cx - 5, cy - 6), 1);
+      graphics_fill_circle(ctx, GPoint(cx + 5, cy - 6), 1);
+    } break;
     default: break;
   }
   graphics_context_set_stroke_width(ctx, 1);
@@ -229,7 +256,11 @@ static void init_roster(void) {
   s_games[GAME_ASTEROIDS] = (MenuEntry){"ASTEROIDS",  "blast the rocks", GColorCyan,     GAME_ASTEROIDS, asteroids_push};
   s_games[GAME_BLOCKS]    = (MenuEntry){"BLOCKS",     "stack & clear",   GColorMagenta,  GAME_BLOCKS,    blocks_push};
   s_games[GAME_BREAKOUT]  = (MenuEntry){"BREAKOUT",   "smash bricks",    GColorOrange,   GAME_BREAKOUT,  breakout_push};
-  s_games[GAME_CATCH]     = (MenuEntry){"CATCH!",     "an LCD classic",  GColorSpringBud,GAME_CATCH,     catch_push};
+  s_games[GAME_CATCH]     = (MenuEntry){"CATCH!",     "an LCD classic",  GColorSpringBud,  GAME_CATCH,     catch_push};
+  s_games[GAME_INVADERS]  = (MenuEntry){"INVADERS",   "defend earth",    GColorBrightGreen,GAME_INVADERS,  invaders_push};
+  s_games[GAME_FLAPPY]    = (MenuEntry){"FLAPPY",     "tap to fly",      GColorChromeYellow,GAME_FLAPPY,   flappy_push};
+  s_games[GAME_PONG]      = (MenuEntry){"PONG",       "rally vs CPU",    GColorWhite,      GAME_PONG,      pong_push};
+  s_games[GAME_FROG]      = (MenuEntry){"PEBBLE-FROG","cross the road",  GColorKellyGreen, GAME_FROG,      frog_push};
 }
 
 static void init(void) {

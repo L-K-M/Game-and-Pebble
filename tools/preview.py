@@ -19,6 +19,8 @@ CYAN=(0,255,255); MAGENTA=(255,0,255); RED=(255,0,0); BLUE=(0,0,255)
 ORANGE=(255,170,0); CHROME=(255,170,0); OXFORD=(0,0,85); SPRINGBUD=(170,255,0)
 PINK=(255,85,170); PURPLE=(170,0,170); DKGRAY=(85,85,85); LTGRAY=(170,170,170)
 SCREAMIN=(85,255,85); ISLAMIC=(0,170,0); LCD=(170,170,85); MELON=(255,170,170)
+BRIGHTGREEN=(85,255,0); JAEGER=(0,85,0); WINDSORTAN=(170,85,0); VIVIDCERU=(0,170,255)
+KELLY=(0,170,0); PICTON=(85,170,255); DARKGREEN=(0,85,0)
 
 def font(sz, bold=True):
     paths = [
@@ -247,9 +249,89 @@ def screen_catch():
     d.rounded_rectangle([bx+9,catch_y,bx+13,catch_y+10], radius=1, fill=BLACK)
     return im
 
+# ---------------- INVADERS ----------------
+def screen_invaders():
+    im,d=newimg(); AROWS,ACOLS=4,6
+    ax=(W-16)//ACOLS; ay=15; aw=ax-6; fx=8; fy=34
+    for r in range(AROWS):
+        for c in range(ACOLS):
+            if r==0 and c in (1,4): continue
+            x=fx+c*ax; y=fy+r*ay
+            d.rounded_rectangle([x,y,x+aw,y+8], radius=2, fill=BRIGHTGREEN)
+            d.rectangle([x+2,y+2,x+3,y+3], fill=BLACK); d.rectangle([x+aw-4,y+2,x+aw-3,y+3], fill=BLACK)
+    sy=H-14-30; scell=6
+    for i in range(4):
+        sx=(W*(i+1))//5-(5*scell)//2
+        for r in range(3):
+            for c in range(5):
+                if i==1 and r==0 and c in (2,3): continue
+                d.rectangle([sx+c*scell,sy+r*scell,sx+c*scell+scell,sy+r*scell+scell], fill=JAEGER)
+    cx=W//2+18; cyy=H-14
+    d.rounded_rectangle([cx-11,cyy,cx+11,cyy+6], radius=1, fill=WHITE)
+    d.rectangle([cx-2,cyy-5,cx+2,cyy+1], fill=WHITE)
+    d.rectangle([cx-1,cyy-30,cx+1,cyy-12], fill=YELLOW)  # bullet
+    for (bx,by) in [(60,90),(120,70)]:
+        d.line([bx,by,bx,by+5], fill=RED, width=2)
+    hud(d,"SCORE 480",None,BRIGHTGREEN)
+    for i in range(3): d.rounded_rectangle([W-14-i*13,8,W-14-i*13+10,13], radius=1, fill=WHITE)
+    return im
+
+# ---------------- FLAPPY ----------------
+def screen_flappy():
+    im=Image.new("RGB",(W,H),VIVIDCERU); d=ImageDraw.Draw(im)
+    top=0; ground=H-12; PW=24; GAP=62
+    for (x,gy) in [(40,150),(140,90)]:
+        d.rectangle([x,top,x+PW,gy-GAP//2], fill=ISLAMIC)
+        d.rectangle([x,gy+GAP//2,x+PW,ground], fill=ISLAMIC)
+        d.rounded_rectangle([x-2,gy-GAP//2-6,x+PW+2,gy-GAP//2], radius=1, fill=GREEN)
+        d.rounded_rectangle([x-2,gy+GAP//2,x+PW+2,gy+GAP//2+6], radius=1, fill=GREEN)
+    d.rectangle([0,ground,W,H], fill=WINDSORTAN); d.rectangle([0,ground,W,ground+3], fill=GREEN)
+    bx,by=W//3,120
+    d.ellipse([bx-7,by-7,bx+7,by+7], fill=YELLOW)
+    d.rectangle([bx+5,by-1,bx+10,by+2], fill=ORANGE)
+    d.ellipse([bx+1,by-5,bx+5,by-1], fill=WHITE); d.ellipse([bx+3,by-4,bx+5,by-2], fill=BLACK)
+    text(d,"3",0,6,W,30,WHITE,"center")
+    return im
+
+# ---------------- PONG ----------------
+def screen_pong():
+    im,d=newimg(); pw=W//4; py=H-16; aiy=30
+    for x in range(4,W,12): d.rectangle([x,H//2-1,x+6,H//2+1], fill=DKGRAY)
+    d.rounded_rectangle([W//2-pw//2,py,W//2+pw//2,py+5], radius=2, fill=WHITE)
+    d.rounded_rectangle([W//2+10-pw//2,aiy,W//2+10+pw//2,aiy+5], radius=2, fill=PICTON)
+    d.rounded_rectangle([W//2-3,H//2-30-3,W//2+3,H//2-30+3], radius=1, fill=WHITE)
+    hud(d,"SCORE 4","x3",PICTON)
+    return im
+
+# ---------------- FROG ----------------
+def screen_frog():
+    im,d=newimg(); COLS=10; cell=W//COLS; rows=(H-HUD)//cell
+    ox=(W-cell*COLS)//2; oy=HUD+(H-HUD-cell*rows)//2; gw=COLS*cell
+    import random; random.seed(7)
+    def traffic(r): return 0<r<rows-1 and r%3!=0
+    carcol=[RED,YELLOW,ORANGE,PICTON]
+    for r in range(rows):
+        y=oy+r*cell
+        col = DKGRAY if traffic(r) else (DARKGREEN if r==0 else JAEGER)
+        d.rectangle([ox,y,ox+gw,y+cell], fill=col)
+        if traffic(r):
+            off=random.randint(0,cell*3)
+            x=off-cell*3
+            while x<gw:
+                d.rounded_rectangle([ox+x,y+2,ox+x+(cell*3)//2,y+cell-2], radius=2, fill=carcol[r%4]); x+=cell*3
+    for c in range(1,COLS,2): d.ellipse([ox+c*cell+cell//2-2,oy+cell//2-2,ox+c*cell+cell//2+2,oy+cell//2+2], fill=BRIGHTGREEN)
+    fcol,frow=COLS//2,rows-1; fx=ox+fcol*cell+cell//2; fy=oy+frow*cell+cell//2; rr=cell//2-2
+    d.ellipse([fx-rr,fy-rr,fx+rr,fy+rr], fill=KELLY)
+    for ex in (-rr//2,rr//2):
+        d.ellipse([fx+ex-2,fy-rr//2-2,fx+ex+2,fy-rr//2+2], fill=BRIGHTGREEN)
+        d.ellipse([fx+ex-1,fy-rr//2-1,fx+ex+1,fy-rr//2+1], fill=BLACK)
+    hud(d,"SCORE 30","x3",KELLY)
+    return im
+
 screens=[("Menu",screen_menu()),("Pebble-Man",screen_pebbleman()),("Snake",screen_snake()),
          ("Asteroids",screen_asteroids()),("Blocks",screen_blocks()),("Breakout",screen_breakout()),
-         ("Catch!",screen_catch())]
+         ("Catch!",screen_catch()),("Invaders",screen_invaders()),("Flappy",screen_flappy()),
+         ("Pong",screen_pong()),("Pebble-Frog",screen_frog())]
 
 # contact sheet
 pad=14; lbl=18; cols=4

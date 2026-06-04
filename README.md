@@ -20,6 +20,10 @@ LCD watch‑games, but with a whole cartridge's worth of titles in one app.
 | **Blocks** | The falling‑tetromino classic, with a ghost piece and next‑piece preview | `UP`/`DOWN` move · `SELECT` tap = rotate, hold = soft drop |
 | **Breakout** | Bounce the ball, clear the bricks, keep it in play | `UP`/`DOWN` paddle · `SELECT` launch |
 | **Catch!** | A Game & Watch‑style LCD homage: slide the basket to catch falling eggs | `UP`/`DOWN` move basket |
+| **Pebble Invaders** | Hold the line against the descending alien horde, behind eroding bunkers | `UP`/`DOWN` move · `SELECT` fire |
+| **Flappy** | Tap to flap, thread the gaps between pipes | `SELECT`/`UP` flap |
+| **Pong** | Rally against a CPU paddle; miss three and it's over | `UP`/`DOWN` paddle · `SELECT` serve |
+| **Pebble‑Frog** | Hop across lanes of traffic to the far bank, faster every round | `SELECT` forward · `UP` left · `DOWN` right |
 
 In every game, **`BACK`** returns to the menu, **`SELECT`** restarts after a
 game over, and your **high score is saved** between launches.
@@ -76,7 +80,11 @@ src/c/
     ├── asteroids.c  trig-based rotation/thrust, splitting asteroids, wrap
     ├── blocks.c     7 tetrominoes, wall kicks, line clears, levels
     ├── breakout.c   float ball physics, paddle english, bricks
-    └── catch.c      discrete-step LCD game in the Game & Watch style
+    ├── catch.c      discrete-step LCD game in the Game & Watch style
+    ├── invaders.c   marching formation, eroding bunkers, bombs, waves
+    ├── flappy.c     one-button gravity/flap, scrolling pipes
+    ├── pong.c       ball physics + a CPU paddle that tracks with lag
+    └── frog.c       lane-crossing with scrolling traffic patterns
 ```
 
 Each game owns its own `Window` and exposes a single `*_push()` entry point.

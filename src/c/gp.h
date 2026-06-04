@@ -20,6 +20,10 @@ typedef enum {
   GAME_BLOCKS,
   GAME_BREAKOUT,
   GAME_CATCH,
+  GAME_INVADERS,
+  GAME_FLAPPY,
+  GAME_PONG,
+  GAME_FROG,
   GAME_COUNT
 } GameId;
 
@@ -58,3 +62,7 @@ void asteroids_push(void);
 void blocks_push(void);
 void breakout_push(void);
 void catch_push(void);
+void invaders_push(void);
+void flappy_push(void);
+void pong_push(void);
+void frog_push(void);
