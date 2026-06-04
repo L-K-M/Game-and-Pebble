@@ -1,0 +1,36 @@
+{
+  "name": "game-and-pebble",
+  "author": "L-K-M",
+  "version": "1.0.0",
+  "keywords": ["pebble-app", "games", "arcade", "retro"],
+  "private": true,
+  "dependencies": {},
+  "pebble": {
+    "displayName": "Game & Pebble",
+    "uuid": "d3ce971d-bfb0-45e9-9638-ac72ed716a6e",
+    "sdkVersion": "3",
+    "enableMultiJS": false,
+    "targetPlatforms": [
+      "basalt",
+      "chalk",
+      "diorite",
+      "emery",
+      "flint",
+      "gabbro"
+    ],
+    "watchapp": {
+      "watchface": false
+    },
+    "messageKeys": [],
+    "resources": {
+      "media": [
+        {
+          "type": "png",
+          "name": "IMAGE_MENU_ICON",
+          "file": "images/menu_icon.png",
+          "menuIcon": true
+        }
+      ]
+    }
+  }
+}
