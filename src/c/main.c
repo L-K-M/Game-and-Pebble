@@ -105,8 +105,7 @@ static void draw_banner(GContext *ctx, GRect bounds) {
   if (gx > -16 && gx < w + 16) {
     graphics_context_set_fill_color(ctx, GColorMelon);
     graphics_fill_rect(ctx, GRect(gx - 6, lane_y - 6, 12, 10), 0, GCornerNone);
-    graphics_fill_radial(ctx, GRect(gx - 6, lane_y - 11, 12, 12), GOvalScaleModeFitCircle, 6,
-                         0, DEG_TO_TRIGANGLE(360));
+    graphics_fill_circle(ctx, GPoint(gx, lane_y - 5), 6);
     graphics_context_set_fill_color(ctx, GColorWhite);
     graphics_fill_circle(ctx, GPoint(gx - 2, lane_y - 5), 2);
     graphics_fill_circle(ctx, GPoint(gx + 3, lane_y - 5), 2);
@@ -184,8 +183,9 @@ static void tick(void *data) {
   if (max_scroll < 0) max_scroll = 0;
   if (target < 0) target = 0;
   if (target > max_scroll) target = max_scroll;
-  s_scroll += (target - s_scroll) / 3;            // ease toward target
-  if (target - s_scroll != 0 && target - s_scroll > -2 && target - s_scroll < 2) s_scroll = target;
+  int diff = target - s_scroll;                   // ease toward target, snap when close
+  if (diff > -3 && diff < 3) s_scroll = target;
+  else s_scroll += diff / 3;
 
   layer_mark_dirty(s_layer);
   s_timer = app_timer_register(90, tick, NULL);

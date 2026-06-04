@@ -56,7 +56,7 @@ void gp_overlay_gameover(GContext *ctx, GRect bounds, const char *title,
   static char s_best[24];
 
   const int pw = bounds.size.w - 22;
-  const int ph = 128;
+  const int ph = 144;
   GRect panel = GRect((bounds.size.w - pw) / 2, (bounds.size.h - ph) / 2, pw, ph);
   gp_panel(ctx, panel, GColorBlack, GColorWhite);
 
