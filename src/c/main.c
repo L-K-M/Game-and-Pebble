@@ -28,6 +28,9 @@ static int       s_scroll = 0;   // current scroll offset in px (smoothed)
 #define ROW_H        38
 #define BANNER_H     34
 
+// Persist slot for the last-played game (safely below HISCORE_KEY_BASE).
+#define MENU_SEL_KEY 1
+
 // ----------------------------------------------------------------------------
 //  Little vector glyphs, one per game, drawn inside a square tile.
 // ----------------------------------------------------------------------------
@@ -180,7 +183,7 @@ static void menu_update(Layer *layer, GContext *ctx) {
       gp_text(ctx, s_games[i].name, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD),
               GRect(tile.origin.x + 30, y + 2, row.size.w - 36, 24), GTextAlignmentLeft);
 
-      char hi[20];
+      char hi[40];
       snprintf(hi, sizeof(hi), "%s  ·  HI %d", s_games[i].tagline, gp_highscore_get(s_games[i].id));
       gp_text(ctx, hi, fonts_get_system_font(FONT_KEY_GOTHIC_14),
               GRect(tile.origin.x + 30, y + 22, row.size.w - 36, 16), GTextAlignmentLeft);
@@ -228,7 +231,10 @@ static void down_click(ClickRecognizerRef r, void *ctx) {
   layer_mark_dirty(s_layer);
 }
 static void select_click(ClickRecognizerRef r, void *ctx) {
-  if (s_games[s_sel].launch) s_games[s_sel].launch();
+  if (s_games[s_sel].launch) {
+    persist_write_int(MENU_SEL_KEY, s_sel);
+    s_games[s_sel].launch();
+  }
 }
 static void click_config(void *ctx) {
   window_single_click_subscribe(BUTTON_ID_UP, up_click);
@@ -266,6 +272,10 @@ static void init_roster(void) {
 static void init(void) {
   srand((unsigned)time(NULL));
   init_roster();
+  if (persist_exists(MENU_SEL_KEY)) {
+    s_sel = persist_read_int(MENU_SEL_KEY);
+    if (s_sel < 0 || s_sel >= GAME_COUNT) s_sel = 0;
+  }
   s_window = window_create();
   window_set_background_color(s_window, GColorBlack);
   window_set_window_handlers(s_window, (WindowHandlers){
