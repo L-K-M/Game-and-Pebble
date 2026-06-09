@@ -117,7 +117,7 @@ static void render(Layer *layer, GContext *ctx) {
   // paddles
   graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_rect(ctx, GRect((int)(s_px - s_pw / 2.0f), s_py, s_pw, 5), 2, GCornersAll);
-  graphics_context_set_fill_color(ctx, GColorPictonBlue);
+  graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorPictonBlue, GColorWhite));
   graphics_fill_rect(ctx, GRect((int)(s_aix - s_pw / 2.0f), s_aiy, s_pw, 5), 2, GCornersAll);
 
   // ball
@@ -127,7 +127,7 @@ static void render(Layer *layer, GContext *ctx) {
   char l[16], r[12];
   snprintf(l, sizeof(l), "SCORE %d", s_score);
   snprintf(r, sizeof(r), "x%d", s_lives);
-  gp_hud(ctx, b, l, r, GColorPictonBlue);
+  gp_hud(ctx, b, l, r, COLOR_FALLBACK(GColorPictonBlue, GColorWhite));
 
   if (s_serving && !s_dead) {
     graphics_context_set_text_color(ctx, GColorWhite);

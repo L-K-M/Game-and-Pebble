@@ -118,9 +118,9 @@ static void render(Layer *layer, GContext *ctx) {
 
   // food (an apple)
   GPoint fc = GPoint(s_ox + s_food.x * CELL + CELL / 2, s_oy + s_food.y * CELL + CELL / 2);
-  graphics_context_set_fill_color(ctx, GColorRed);
+  graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorRed, GColorWhite));
   graphics_fill_circle(ctx, fc, CELL / 2 - 1);
-  graphics_context_set_fill_color(ctx, GColorIslamicGreen);
+  graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorIslamicGreen, GColorWhite));
   graphics_fill_rect(ctx, GRect(fc.x - 1, fc.y - CELL / 2 - 1, 2, 3), 0, GCornerNone);
 
   // snake

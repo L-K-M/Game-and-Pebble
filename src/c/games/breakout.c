@@ -29,12 +29,13 @@ static float s_paddle_x;             // paddle centre x
 static const float BALL_R = 3.0f;
 
 static GColor row_color(int row) {
+  // explicit b/w fallbacks: red/orange luminance-map to black (invisible)
   switch (row) {
-    case 0: return GColorRed;
-    case 1: return GColorOrange;
-    case 2: return GColorYellow;
-    case 3: return GColorGreen;
-    default: return GColorCyan;
+    case 0: return COLOR_FALLBACK(GColorRed, GColorWhite);
+    case 1: return COLOR_FALLBACK(GColorOrange, GColorWhite);
+    case 2: return COLOR_FALLBACK(GColorYellow, GColorWhite);
+    case 3: return COLOR_FALLBACK(GColorGreen, GColorWhite);
+    default: return COLOR_FALLBACK(GColorCyan, GColorWhite);
   }
 }
 
@@ -146,7 +147,7 @@ static void render(Layer *layer, GContext *ctx) {
   char l[16], r[20];
   snprintf(l, sizeof(l), "SCORE %d", s_score);
   snprintf(r, sizeof(r), "BALLS %d", s_lives);
-  gp_hud(ctx, b, l, r, GColorOrange);
+  gp_hud(ctx, b, l, r, COLOR_FALLBACK(GColorOrange, GColorWhite));
 
   // bricks
   for (int row = 0; row < ROWS; row++) {

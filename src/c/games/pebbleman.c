@@ -68,8 +68,11 @@ static GPoint pix(int c, int r, int dx, int dy, float prog) {
                 s_oy + r * s_tile + s_tile / 2 + (int)(dy * prog * s_tile));
 }
 static GColor ghost_color(int i) {
-  switch (i) { case 0: return GColorRed; case 1: return GColorBrilliantRose;
-               case 2: return GColorCyan; default: return GColorOrange; }
+  // explicit b/w fallbacks: red/orange luminance-map to black (invisible)
+  switch (i) { case 0: return COLOR_FALLBACK(GColorRed, GColorWhite);
+               case 1: return COLOR_FALLBACK(GColorBrilliantRose, GColorWhite);
+               case 2: return COLOR_FALLBACK(GColorCyan, GColorWhite);
+               default: return COLOR_FALLBACK(GColorOrange, GColorWhite); }
 }
 static int head_deg(int dx, int dy) {
   if (dx > 0) return 90;
@@ -233,7 +236,8 @@ static void draw_pac(GContext *ctx, int cx, int cy, int r, int heading, int open
 static void draw_ghost(GContext *ctx, int i, int cx, int cy, int r) {
   GColor body;
   if (s_gcool[i] > 0) body = GColorDarkGray;
-  else if (s_fright > 0) body = (s_fright < 40 && (s_anim / 3) % 2) ? GColorWhite : GColorBlue;
+  else if (s_fright > 0) body = (s_fright < 40 && (s_anim / 3) % 2)
+                                ? GColorWhite : COLOR_FALLBACK(GColorBlue, GColorDarkGray);
   else body = ghost_color(i);
 
   graphics_context_set_fill_color(ctx, body);
@@ -250,7 +254,7 @@ static void draw_ghost(GContext *ctx, int i, int cx, int cy, int r) {
   if (!scared) {
     graphics_fill_circle(ctx, GPoint(cx - r / 2, cy - 1), r / 3 + 1);
     graphics_fill_circle(ctx, GPoint(cx + r / 2, cy - 1), r / 3 + 1);
-    graphics_context_set_fill_color(ctx, GColorBlue);
+    graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorBlue, GColorBlack));
     int ex = s_gdx[i] * 2, ey = s_gdy[i] * 2;
     graphics_fill_circle(ctx, GPoint(cx - r / 2 + ex, cy - 1 + ey), 2);
     graphics_fill_circle(ctx, GPoint(cx + r / 2 + ex, cy - 1 + ey), 2);
@@ -272,14 +276,15 @@ static void render(Layer *layer, GContext *ctx) {
       int x = s_ox + c * s_tile, y = s_oy + r * s_tile;
       char ch = s_grid[r][c];
       if (ch == '#') {
-        graphics_context_set_fill_color(ctx, GColorBlue);
+        // blue → black on 1-bit displays; dithered gray keeps the maze visible
+        graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorBlue, GColorLightGray));
         graphics_fill_rect(ctx, GRect(x, y, s_tile, s_tile), 0, GCornerNone);
       } else if (ch == '.') {
-        graphics_context_set_fill_color(ctx, GColorChromeYellow);
+        graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorChromeYellow, GColorWhite));
         graphics_fill_circle(ctx, GPoint(x + s_tile / 2, y + s_tile / 2), 2);
       } else if (ch == 'o') {
         if ((s_anim / 4) % 2 == 0) {
-          graphics_context_set_fill_color(ctx, GColorChromeYellow);
+          graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorChromeYellow, GColorWhite));
           graphics_fill_circle(ctx, GPoint(x + s_tile / 2, y + s_tile / 2), s_tile / 4 + 1);
         }
       }

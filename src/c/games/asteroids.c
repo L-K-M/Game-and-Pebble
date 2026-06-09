@@ -199,7 +199,7 @@ static void render(Layer *layer, GContext *ctx) {
   graphics_fill_rect(ctx, b, 0, GCornerNone);
 
   // asteroids
-  graphics_context_set_stroke_color(ctx, GColorLightGray);
+  graphics_context_set_stroke_color(ctx, COLOR_FALLBACK(GColorLightGray, GColorWhite));
   graphics_context_set_stroke_width(ctx, 2);
   for (int i = 0; i < MAX_AST; i++) if (s_ast[i].active) draw_poly_wrapped(ctx, &s_ast[i]);
 
@@ -220,7 +220,7 @@ static void render(Layer *layer, GContext *ctx) {
     graphics_draw_line(ctx, l, r);
     if (s_thrust && (s_inv / 2) % 2 == 0) {        // flickering exhaust flame
       GPoint tail = polar(s_sx, s_sy, s_sangle + DEG_TO_TRIGANGLE(180), 11);
-      graphics_context_set_stroke_color(ctx, GColorOrange);
+      graphics_context_set_stroke_color(ctx, COLOR_FALLBACK(GColorOrange, GColorWhite));
       graphics_draw_line(ctx, GPoint((l.x + r.x) / 2, (l.y + r.y) / 2), tail);
     }
   }
