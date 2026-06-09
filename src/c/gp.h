@@ -32,6 +32,15 @@ int  gp_highscore_get(GameId id);
 // Stores score if it beats the saved best. Returns true when a record was set.
 bool gp_highscore_submit(GameId id, int score);
 
+// --- Focus pause -------------------------------------------------------------
+// When a notification (or alarm, etc.) takes over the screen the app keeps
+// running, so without this the games tick on unseen and the player comes back
+// dead. Games subscribe in their window load handler and check gp_in_focus()
+// at the top of their tick: while unfocused, idle without stepping the world.
+void gp_focus_subscribe(void);
+void gp_focus_unsubscribe(void);
+bool gp_in_focus(void);
+
 // --- Shared drawing helpers -------------------------------------------------
 // One-liner text draw (no word wrap, single line).
 void gp_text(GContext *ctx, const char *text, GFont font, GRect box, GTextAlignment align);

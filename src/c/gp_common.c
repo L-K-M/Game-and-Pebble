@@ -18,6 +18,26 @@ bool gp_highscore_submit(GameId id, int score) {
   return false;
 }
 
+// ---- Focus pause -------------------------------------------------------------
+static bool s_in_focus = true;
+
+static void focus_handler(bool in_focus) {
+  s_in_focus = in_focus;
+}
+
+void gp_focus_subscribe(void) {
+  s_in_focus = true;
+  app_focus_service_subscribe(focus_handler);
+}
+
+void gp_focus_unsubscribe(void) {
+  app_focus_service_unsubscribe();
+}
+
+bool gp_in_focus(void) {
+  return s_in_focus;
+}
+
 // ---- Drawing helpers -------------------------------------------------------
 void gp_text(GContext *ctx, const char *text, GFont font, GRect box, GTextAlignment align) {
   graphics_draw_text(ctx, text, font, box, GTextOverflowModeTrailingEllipsis, align, NULL);
