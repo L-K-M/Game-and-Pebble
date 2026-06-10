@@ -70,7 +70,9 @@ static void next_wave(void) {
 
 // erode a shield cell at pixel (x,y); returns true if something was hit
 static bool shield_hit(int x, int y) {
-  for (int i = 0; i < NSHIELD; i++) {
+  if (y < s_shield_y) return false;     // int division truncates toward zero,
+  for (int i = 0; i < NSHIELD; i++) {   // so guard before dividing or shots
+    if (x < s_shield_x[i]) continue;    // just outside would erode cell 0
     int lc = (x - s_shield_x[i]) / s_scell;
     int lr = (y - s_shield_y) / s_scell;
     if (lc >= 0 && lc < SW && lr >= 0 && lr < SH && s_shield[i][lr][lc]) {

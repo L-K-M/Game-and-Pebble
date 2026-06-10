@@ -103,9 +103,10 @@ static void step(void) {
   if (s_bx + BALL_R > s_fx + s_fw)     { s_bx = s_fx + s_fw - BALL_R;    s_vx = -s_vx; }
   if (s_by - BALL_R < s_fy)            { s_by = s_fy + BALL_R;           s_vy = -s_vy; }
 
-  // bricks
-  int col = (int)((s_bx - s_fx) / s_bw);
-  int row = (int)((s_by - s_btop) / s_bh);
+  // bricks (guard the casts: C truncates toward zero, so a ball up to one
+  // brick above s_btop would otherwise alias to row 0 and hit through air)
+  int col = (s_bx >= s_fx) ? (int)((s_bx - s_fx) / s_bw) : -1;
+  int row = (s_by >= s_btop) ? (int)((s_by - s_btop) / s_bh) : -1;
   if (row >= 0 && row < ROWS && col >= 0 && col < COLS && s_brick[row][col]) {
     s_brick[row][col] = false;
     s_left--;
