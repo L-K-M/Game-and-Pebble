@@ -16,7 +16,7 @@
 #define MISS_LIMIT  3
 
 // The classic grey-green LCD look (degrades to white/black on mono watches).
-#define LCD_BG   GColorFromRGB(170, 175, 90)
+#define LCD_BG   COLOR_FALLBACK(GColorFromRGB(170, 175, 90), GColorWhite)
 #define LCD_INK  GColorBlack
 
 static Window   *s_window;

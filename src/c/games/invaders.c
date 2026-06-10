@@ -205,15 +205,15 @@ static void render(Layer *layer, GContext *ctx) {
       if (s_alien[r][c]) draw_alien(ctx, s_fx + c * s_ax, s_fy + r * s_ay);
 
   // shields
-  graphics_context_set_fill_color(ctx, GColorJaegerGreen);
+  graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorJaegerGreen, GColorWhite));
   for (int i = 0; i < NSHIELD; i++)
     for (int r = 0; r < SH; r++)
       for (int c = 0; c < SW; c++)
         if (s_shield[i][r][c])
           graphics_fill_rect(ctx, GRect(s_shield_x[i] + c * s_scell, s_shield_y + r * s_scell, s_scell, s_scell), 0, GCornerNone);
 
-  // bombs
-  graphics_context_set_stroke_color(ctx, GColorRed);
+  // bombs (red → black on 1-bit displays, i.e. invisible death from above)
+  graphics_context_set_stroke_color(ctx, COLOR_FALLBACK(GColorRed, GColorWhite));
   graphics_context_set_stroke_width(ctx, 2);
   for (int i = 0; i < NBOMB; i++)
     if (s_bomb[i].active) graphics_draw_line(ctx, GPoint(s_bomb[i].x, s_bomb[i].y), GPoint(s_bomb[i].x, s_bomb[i].y + 5));

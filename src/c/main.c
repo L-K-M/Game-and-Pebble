@@ -123,7 +123,7 @@ static void draw_banner(GContext *ctx, GRect bounds) {
   int pac_x = (s_anim * 3) % span - 20;
 
   // dots not yet eaten (anything ahead of the chomper)
-  graphics_context_set_fill_color(ctx, GColorChromeYellow);
+  graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorChromeYellow, GColorWhite));
   for (int x = 8; x < w; x += 12) {
     if (x > pac_x + 6) {
       graphics_fill_circle(ctx, GPoint(x, lane_y), 2);
@@ -133,10 +133,10 @@ static void draw_banner(GContext *ctx, GRect bounds) {
   // ghost trailing behind
   int gx = pac_x - 22;
   if (gx > -16 && gx < w + 16) {
-    graphics_context_set_fill_color(ctx, GColorMelon);
+    graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorMelon, GColorWhite));
     graphics_fill_rect(ctx, GRect(gx - 6, lane_y - 6, 12, 10), 0, GCornerNone);
     graphics_fill_circle(ctx, GPoint(gx, lane_y - 5), 6);
-    graphics_context_set_fill_color(ctx, GColorWhite);
+    graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorWhite, GColorBlack));  // eyes on a white body
     graphics_fill_circle(ctx, GPoint(gx - 2, lane_y - 5), 2);
     graphics_fill_circle(ctx, GPoint(gx + 3, lane_y - 5), 2);
   }
@@ -257,16 +257,18 @@ static void win_load(Window *window) {
 
 // ----------------------------------------------------------------------------
 static void init_roster(void) {
-  s_games[GAME_PEBBLEMAN] = (MenuEntry){"PEBBLE-MAN", "chomp the dots",  GColorYellow,   GAME_PEBBLEMAN, pebbleman_push};
-  s_games[GAME_SNAKE]     = (MenuEntry){"SNAKE",      "eat & grow",      GColorGreen,    GAME_SNAKE,     snake_push};
-  s_games[GAME_ASTEROIDS] = (MenuEntry){"ASTEROIDS",  "blast the rocks", GColorCyan,     GAME_ASTEROIDS, asteroids_push};
-  s_games[GAME_BLOCKS]    = (MenuEntry){"BLOCKS",     "stack & clear",   GColorMagenta,  GAME_BLOCKS,    blocks_push};
-  s_games[GAME_BREAKOUT]  = (MenuEntry){"BREAKOUT",   "smash bricks",    GColorOrange,   GAME_BREAKOUT,  breakout_push};
-  s_games[GAME_CATCH]     = (MenuEntry){"CATCH!",     "an LCD classic",  GColorSpringBud,  GAME_CATCH,     catch_push};
-  s_games[GAME_INVADERS]  = (MenuEntry){"INVADERS",   "defend earth",    GColorBrightGreen,GAME_INVADERS,  invaders_push};
-  s_games[GAME_FLAPPY]    = (MenuEntry){"FLAPPY",     "tap to fly",      GColorChromeYellow,GAME_FLAPPY,   flappy_push};
-  s_games[GAME_PONG]      = (MenuEntry){"PONG",       "rally vs CPU",    GColorWhite,      GAME_PONG,      pong_push};
-  s_games[GAME_FROG]      = (MenuEntry){"PEBBLE-FROG","cross the road",  GColorKellyGreen, GAME_FROG,      frog_push};
+  // accents fall back to white on 1-bit displays, where some of these map to
+  // black and would leave the selected row black-on-black
+  s_games[GAME_PEBBLEMAN] = (MenuEntry){"PEBBLE-MAN", "chomp the dots",  COLOR_FALLBACK(GColorYellow, GColorWhite),      GAME_PEBBLEMAN, pebbleman_push};
+  s_games[GAME_SNAKE]     = (MenuEntry){"SNAKE",      "eat & grow",      COLOR_FALLBACK(GColorGreen, GColorWhite),       GAME_SNAKE,     snake_push};
+  s_games[GAME_ASTEROIDS] = (MenuEntry){"ASTEROIDS",  "blast the rocks", COLOR_FALLBACK(GColorCyan, GColorWhite),        GAME_ASTEROIDS, asteroids_push};
+  s_games[GAME_BLOCKS]    = (MenuEntry){"BLOCKS",     "stack & clear",   COLOR_FALLBACK(GColorMagenta, GColorWhite),     GAME_BLOCKS,    blocks_push};
+  s_games[GAME_BREAKOUT]  = (MenuEntry){"BREAKOUT",   "smash bricks",    COLOR_FALLBACK(GColorOrange, GColorWhite),      GAME_BREAKOUT,  breakout_push};
+  s_games[GAME_CATCH]     = (MenuEntry){"CATCH!",     "an LCD classic",  COLOR_FALLBACK(GColorSpringBud, GColorWhite),   GAME_CATCH,     catch_push};
+  s_games[GAME_INVADERS]  = (MenuEntry){"INVADERS",   "defend earth",    COLOR_FALLBACK(GColorBrightGreen, GColorWhite), GAME_INVADERS,  invaders_push};
+  s_games[GAME_FLAPPY]    = (MenuEntry){"FLAPPY",     "tap to fly",      COLOR_FALLBACK(GColorChromeYellow, GColorWhite),GAME_FLAPPY,    flappy_push};
+  s_games[GAME_PONG]      = (MenuEntry){"PONG",       "rally vs CPU",    GColorWhite,                                    GAME_PONG,      pong_push};
+  s_games[GAME_FROG]      = (MenuEntry){"PEBBLE-FROG","cross the road",  COLOR_FALLBACK(GColorKellyGreen, GColorWhite),  GAME_FROG,      frog_push};
 }
 
 static void init(void) {

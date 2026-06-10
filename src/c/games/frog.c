@@ -25,8 +25,11 @@ static int   s_cargap, s_carw;
 static bool is_traffic(int r) { return r > 0 && r < s_rows - 1 && (r % 3 != 0); }
 
 static GColor car_color(int r) {
-  switch (r % 4) { case 0: return GColorRed; case 1: return GColorYellow;
-                   case 2: return GColorOrange; default: return GColorPictonBlue; }
+  // explicit b/w fallbacks: red/orange luminance-map to black (invisible)
+  switch (r % 4) { case 0: return COLOR_FALLBACK(GColorRed, GColorWhite);
+                   case 1: return COLOR_FALLBACK(GColorYellow, GColorWhite);
+                   case 2: return COLOR_FALLBACK(GColorOrange, GColorWhite);
+                   default: return COLOR_FALLBACK(GColorPictonBlue, GColorWhite); }
 }
 
 static void setup_lanes(void) {
@@ -108,7 +111,8 @@ static void render(Layer *layer, GContext *ctx) {
     int y = s_oy + r * s_cell;
     bool traffic = is_traffic(r);
     graphics_context_set_fill_color(ctx, traffic ? GColorDarkGray :
-                                    (r == 0 ? GColorDarkGreen : GColorJaegerGreen));
+                                    (r == 0 ? COLOR_FALLBACK(GColorDarkGreen, GColorBlack)
+                                            : COLOR_FALLBACK(GColorJaegerGreen, GColorBlack)));
     graphics_fill_rect(ctx, GRect(s_ox, y, gw, s_cell), 0, GCornerNone);
     if (traffic) {
       graphics_context_set_fill_color(ctx, car_color(r));
@@ -127,7 +131,7 @@ static void render(Layer *layer, GContext *ctx) {
     int fx = s_ox + s_fcol * s_cell + s_cell / 2;
     int fy = s_oy + s_frow * s_cell + s_cell / 2;
     int rr = s_cell / 2 - 2;
-    graphics_context_set_fill_color(ctx, GColorKellyGreen);
+    graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorKellyGreen, GColorWhite));
     graphics_fill_circle(ctx, GPoint(fx, fy), rr);
     graphics_context_set_fill_color(ctx, GColorBrightGreen);
     graphics_fill_circle(ctx, GPoint(fx - rr / 2, fy - rr / 2), 2);
@@ -140,7 +144,7 @@ static void render(Layer *layer, GContext *ctx) {
   char l[16], r[12];
   snprintf(l, sizeof(l), "SCORE %d", s_score);
   snprintf(r, sizeof(r), "x%d", s_lives);
-  gp_hud(ctx, b, l, r, GColorKellyGreen);
+  gp_hud(ctx, b, l, r, COLOR_FALLBACK(GColorKellyGreen, GColorWhite));
 
   if (s_dead) gp_overlay_gameover(ctx, b, "GAME OVER", s_score, s_best, s_record, s_blink);
 }

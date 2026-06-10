@@ -12,9 +12,9 @@
 #define SPACING   96       // horizontal spacing between pipes
 #define TICK_MS   33
 
-#define SKY    GColorVividCerulean
-#define PIPE   GColorIslamicGreen
-#define GROUND GColorWindsorTan
+#define SKY    COLOR_FALLBACK(GColorVividCerulean, GColorBlack)
+#define PIPE   COLOR_FALLBACK(GColorIslamicGreen, GColorWhite)
+#define GROUND COLOR_FALLBACK(GColorWindsorTan, GColorDarkGray)
 
 static Window   *s_window;
 static AppTimer *s_timer;
@@ -109,7 +109,7 @@ static void render(Layer *layer, GContext *ctx) {
   int bx = s_bird_x, by = (int)s_by;
   graphics_context_set_fill_color(ctx, GColorYellow);
   graphics_fill_circle(ctx, GPoint(bx, by), 7);
-  graphics_context_set_fill_color(ctx, GColorOrange);
+  graphics_context_set_fill_color(ctx, COLOR_FALLBACK(GColorOrange, GColorWhite));
   graphics_fill_rect(ctx, GRect(bx + 5, by - 1, 5, 3), 0, GCornerNone);     // beak
   graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_circle(ctx, GPoint(bx + 3, by - 3), 2);

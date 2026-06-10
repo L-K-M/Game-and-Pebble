@@ -30,10 +30,15 @@ static const Cell PIECES[7][4][4] = {
 };
 
 static GColor piece_color(int p) {
+  // explicit b/w fallbacks: purple/red/blue luminance-map to black (invisible)
   switch (p) {
-    case 0: return GColorCyan;    case 1: return GColorYellow; case 2: return GColorPurple;
-    case 3: return GColorGreen;   case 4: return GColorRed;    case 5: return GColorBlue;
-    default: return GColorOrange;
+    case 0: return COLOR_FALLBACK(GColorCyan, GColorWhite);
+    case 1: return COLOR_FALLBACK(GColorYellow, GColorWhite);
+    case 2: return COLOR_FALLBACK(GColorPurple, GColorWhite);
+    case 3: return COLOR_FALLBACK(GColorGreen, GColorWhite);
+    case 4: return COLOR_FALLBACK(GColorRed, GColorWhite);
+    case 5: return COLOR_FALLBACK(GColorBlue, GColorWhite);
+    default: return COLOR_FALLBACK(GColorOrange, GColorWhite);
   }
 }
 
@@ -145,7 +150,7 @@ static void render(Layer *layer, GContext *ctx) {
   char l[16], r[12];
   snprintf(l, sizeof(l), "SCORE %d", s_score);
   snprintf(r, sizeof(r), "LV %d", s_level);
-  gp_hud(ctx, b, l, r, GColorMagenta);
+  gp_hud(ctx, b, l, r, COLOR_FALLBACK(GColorMagenta, GColorWhite));
 
   // board well
   GRect well = GRect(s_bx - 2, s_by - 2, COLS * s_cell + 4, ROWS * s_cell + 4);
