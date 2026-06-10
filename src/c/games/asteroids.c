@@ -244,6 +244,10 @@ static void render(Layer *layer, GContext *ctx) {
 }
 
 static void tick(void *data) {
+  if (!gp_in_focus()) {     // a notification is covering us; idle, don't step
+    s_timer = app_timer_register(200, tick, NULL);
+    return;
+  }
   if (s_dead) {
     s_blink = !s_blink;
     layer_mark_dirty(window_get_root_layer(s_window));
@@ -277,11 +281,13 @@ static void click_config(void *ctx) {
 }
 
 static void win_load(Window *window) {
+  gp_focus_subscribe();
   layer_set_update_proc(window_get_root_layer(window), render);
   reset_game();
   s_timer = app_timer_register(TICK_MS, tick, NULL);
 }
 static void win_unload(Window *window) {
+  gp_focus_unsubscribe();
   if (s_timer) { app_timer_cancel(s_timer); s_timer = NULL; }
 }
 
