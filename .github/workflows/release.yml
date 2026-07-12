@@ -1,0 +1,56 @@
+name: Release Pebble app
+
+# Triggered when a version tag (e.g. v1.2.3) is pushed.
+# Runs the same build as build.yml and attaches the resulting .pbw
+# to a GitHub Release so it can be sideloaded onto a watch.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Sanity-check the maze
+        run: python3 tools/verify_maze.py
+
+      - name: Install pebble-tool
+        run: |
+          python3 -m venv "$HOME/pebble-venv"
+          "$HOME/pebble-venv/bin/pip" install --upgrade pip setuptools wheel
+          "$HOME/pebble-venv/bin/pip" install pebble-tool
+          echo "$HOME/pebble-venv/bin" >> "$GITHUB_PATH"
+
+      - name: Install Pebble SDK
+        run: yes | pebble sdk install latest
+
+      - name: Build
+        run: pebble build
+
+      - name: Rename .pbw with tag
+        run: |
+          PBW="$(ls build/*.pbw | head -n1)"
+          cp "$PBW" "build/game-and-pebble-${GITHUB_REF_NAME}.pbw"
+          ls -la build/*.pbw
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: build/game-and-pebble-${{ github.ref_name }}.pbw
