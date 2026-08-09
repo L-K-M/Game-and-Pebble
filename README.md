@@ -32,7 +32,7 @@ On the menu, `UP`/`DOWN` pick a game and `SELECT` plays it. `BACK` exits.
 
 ## Install the pre‑built app
 
-Every push builds a `.pbw` you can download and side‑load:
+Download the latest `.pbw` from [GitHub Releases](https://github.com/L-K-M/Game-and-Pebble/releases/latest). Every push also produces a CI artifact for testing:
 
 1. Open the latest run under the repo's **Actions → Build Pebble app**.
 2. Download the **`Game-and-Pebble-pbw`** artifact and unzip it.
