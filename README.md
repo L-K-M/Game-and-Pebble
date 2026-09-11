@@ -4,6 +4,9 @@ A pocketful of classic arcade games for your wrist — built for the **Pebble
 Time 2** (and every other modern Pebble). Inspired by those little Nintendo
 LCD watch‑games, but with a whole cartridge's worth of titles in one app.
 
+> [!IMPORTANT]
+> LLM disclosure: This codebase was written with substantial help from large language models: AI coding agents working from the [`AGENTS.md`](AGENTS.md) brief in this repo.
+
 ![Preview of all the game screens](tools/preview.png)
 
 > The image above is an illustrative render of each screen at the Pebble Time 2
